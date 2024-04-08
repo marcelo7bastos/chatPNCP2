@@ -1,2 +1,2 @@
-# chatPNCP2
-Repositório para o chatPNCP2
+# chatPNCP
+Repositório para o chatPNCP
