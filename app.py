@@ -11,7 +11,7 @@ import time
 import random
 
 # Carrega as variáveis de ambiente do arquivo .env
-load_dotenv()
+#load_dotenv()
 
 # Agora, você pode acessar a variável de ambiente como antes
 #api_token = os.getenv('OPENAI_API_KEY', 'Token Não Encontrado')
