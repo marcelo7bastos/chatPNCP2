@@ -15,7 +15,8 @@ load_dotenv()
 
 # Agora, você pode acessar a variável de ambiente como antes
 #api_token = os.getenv('OPENAI_API_KEY', 'Token Não Encontrado')
-assistant_id = os.getenv('ASSISTANT_ID', 'Assistant ID Não Encontrado')
+#assistant_id = os.getenv('ASSISTANT_ID', 'Assistant ID Não Encontrado')
+assistant_id = st.secrets.get("ASSISTANT_ID", "Assistant ID Não Encontrado")
 
 
 #Teste token
