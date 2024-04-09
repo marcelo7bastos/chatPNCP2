@@ -171,29 +171,30 @@ if 'mensagem_desatualizada' not in st.session_state:
 
 def iniciar_conversa(pergunta_usuario):
     # Se é a primeira mensagem da conversa, cria um novo thread
-    if st.session_state.thread_id is None:
-        _, msg = create_thread_run(pergunta_usuario)
-        #st.write(msg)  # Exibe uma mensagem de status (opcional) Um momento, por favor. Estou consultando os sábios da internet.
+    if 'thread_id' not in st.session_state or st.session_state.thread_id is None:
+        _, msg = create_thread_run(pergunta_usuario)  # Certifique-se de ajustar conforme a assinatura da sua função
         st.write("Um momento, por favor. Estou consultando os sábios do PNCP.")
         time.sleep(5)
-        # Espera pela primeira resposta do chatbot
-        mensagem_desatualizada, erro = list_messages()
-        time.sleep(5)
-        while not mensagem_desatualizada and not erro:  # Se a resposta for vazia, espera mais
-            time.sleep(5)
-            wait_message = st.empty()  # Placeholder para mensagens de espera
-            time.sleep(5)
-            wait_message.write(random.choice(mensagens_espera))
-            time.sleep(2)
-            mensagem_desatualizada, erro = list_messages()
-            wait_message.empty()
 
-        if erro:
-            st.error(erro)  # Exibe erro se não conseguir obter a resposta
-            return
-        else:
+    tentativas = 0
+    mensagem_desatualizada, erro = "", ""
+    while tentativas < 10:
+        mensagem_desatualizada, erro = list_messages()  # Ajuste conforme a assinatura da sua função
+        if mensagem_desatualizada and mensagem_desatualizada != st.session_state.get('mensagem_desatualizada', ''):
             st.session_state.mensagem_desatualizada = mensagem_desatualizada
-            st.write("Resposta do Chatbot:", mensagem_desatualizada)  # Exibe a resposta atual do chatbot
+            st.write("Resposta do Chatbot:", mensagem_desatualizada)
+            break
+        elif erro:
+            st.error(erro)  # Exibe erro se não conseguir obter a resposta
+            break
+        else:
+            wait_message = st.empty()
+            wait_message.write(random.choice(mensagens_espera))
+            time.sleep(5)  # Ajuste o tempo conforme necessário
+            wait_message.empty()
+            tentativas += 1
+            if tentativas == 10:  # Se atingir o número máximo de tentativas sem resposta
+                st.error("Não foi possível obter uma resposta após várias tentativas.")
 
 def manter_conversa(pergunta_usuario):
     # Para mensagens subsequentes, envia a mensagem e processa a resposta
